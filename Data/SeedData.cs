@@ -20,7 +20,7 @@ namespace WebApplication1.Data
                 }
             }
 
-            string staffEmail = "arnika@iubat.edu";
+            string staffEmail = "suchi@iubat.edu";
             var existingStaff = await userManager.FindByEmailAsync(staffEmail);
             if (existingStaff == null)
             {
@@ -28,12 +28,12 @@ namespace WebApplication1.Data
                 {
                     UserName = staffEmail,
                     Email = staffEmail,
-                    FirstName = "Arnika",
+                    FirstName = "Suchi",
                     LastName = "IUBAT",
                     EmailConfirmed = true
                 };
 
-                var result = await userManager.CreateAsync(staffUser, "P@ssw0rd");
+                var result = await userManager.CreateAsync(staffUser, "Passw0rd");
                 if (result.Succeeded)
                 {
                     var roleResult = await userManager.AddToRoleAsync(staffUser, "Staff");
@@ -48,7 +48,7 @@ namespace WebApplication1.Data
             }
             else
             {
-                // Ensure existing arnika has Staff role (fixes case where user existed without role)
+                // Ensure existing suchi has Staff role (fixes case where user existed without role)
                 if (!await userManager.IsInRoleAsync(existingStaff, "Staff"))
                 {
                     var addRoleResult = await userManager.AddToRoleAsync(existingStaff, "Staff");
@@ -62,8 +62,8 @@ namespace WebApplication1.Data
                 }
             }
 
-            // Cleanup legacy staff accounts (replaced by arnika@iubat.edu per latest requirement)
-            string[] legacyEmails = { "maya@iubat.com", "priya@iubat.edu", "maya@iubat.edu" };
+            // Cleanup legacy staff accounts (replaced by suchi@iubat.edu per latest requirement)
+            string[] legacyEmails = { "maya@iubat.com", "priya@iubat.edu", "maya@iubat.edu", "arnika@iubat.edu" };
             foreach (var legacyEmail in legacyEmails)
             {
                 var legacyUser = await userManager.FindByEmailAsync(legacyEmail);
