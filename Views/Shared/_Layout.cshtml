@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - IUBAT Campus Services</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    <!-- ===== BRAC Top Bar — Hunting + Quick Links ===== -->
+    <div class="rs-toolbar">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-7 col-md-6">
+                    <div class="rs-toolbar-left">
+                        <div class="welcome-message">
+                            <i class="fa fa-phone"></i>
+                            <span>Hunting: 09613-933933</span>
+                            <span class="d-none d-md-inline" style="margin:0 8px; opacity:0.45;">|</span>
+                            <span class="d-none d-xl-inline">Welcome to IUBAT — International University of Business Agriculture and Technology</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-5 col-md-6">
+                    <div class="rs-toolbar-right">
+                        <div class="toolbar-share-icon">
+                            <ul>
+                                <li><a href="https://www.facebook.com" target="_blank" aria-label="Facebook"><i class="fa fa-facebook"></i></a></li>
+                                <li><a href="https://twitter.com" target="_blank" aria-label="Twitter"><i class="fa fa-twitter"></i></a></li>
+                                <li><a href="https://www.youtube.com" target="_blank" aria-label="YouTube"><i class="fa fa-youtube-play"></i></a></li>
+                                <li><a href="https://www.linkedin.com" target="_blank" aria-label="LinkedIn"><i class="fa fa-linkedin"></i></a></li>
+                            </ul>
+                        </div>
+                        @if (User.Identity != null && User.Identity.IsAuthenticated)
+                        {
+                            <a class="apply-btn" asp-controller="Account" asp-action="Logout" style="pointer-events:none; opacity:0.92;">
+                                <i class="fa fa-user"></i> @User.Identity.Name
+                            </a>
+                        }
+                        else
+                        {
+                            <a class="apply-btn" asp-controller="Account" asp-action="Login"><i class="fa fa-sign-in"></i> Apply / Login</a>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== BRAC Header Top: Logo + Contact Widgets ===== -->
+    <div class="rs-header-top">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-4 col-md-12">
+                    <div class="logo-area">
+                        <a asp-controller="Home" asp-action="Index">
+                            <span class="logo-img">I</span>
+                            <span class="logo-text">
+                                <span class="brand-title">IUBAT</span>
+                                <span class="brand-subtitle">Campus Services</span>
+                                <span class="brand-tagline">Student Service Request System</span>
+                            </span>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-8 d-none d-lg-block">
+                    <div class="row g-0">
+                        <div class="col-sm-4">
+                            <div class="header-contact">
+                                <div class="widget-text">
+                                    <i class="fa fa-envelope-o"></i>
+                                    <div class="info-text">
+                                        <span>Mail Us</span>
+                                        <a href="mailto:info@iubat.edu">info@iubat.edu</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="header-contact">
+                                <div class="widget-text">
+                                    <i class="fa fa-phone"></i>
+                                    <div class="info-text">
+                                        <span>Call Us</span>
+                                        <a href="tel:+8809613933933">+88 09613-933933</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="header-contact">
+                                <div class="widget-text">
+                                    <i class="fa fa-map-marker"></i>
+                                    <div class="info-text">
+                                        <span>Location</span>
+                                        <span class="info-link">BRAC, Dhaka-1230</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== BRAC White Menu Bar (Sticky) ===== -->
+    <div class="menu-area menu-sticky" id="mainMenu">
+        <div class="container">
+            <nav class="navbar navbar-expand-lg navbar-custom">
+                <a class="navbar-brand d-lg-none" asp-controller="Home" asp-action="Index" style="font-weight:900; color:var(--primary); font-size:16px; letter-spacing:-0.02em; font-family:'Inter',sans-serif;">IUBAT</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="mainNav">
+                    <ul class="navbar-nav me-auto align-items-lg-center">
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Home" asp-action="Index"><i class="fa fa-home" style="margin-right:5px; color:var(--primary);"></i> Home</a>
+                        </li>
+                        @if (User.Identity != null && User.Identity.IsAuthenticated)
+                        {
+                            @if (User.IsInRole("Student"))
+                            {
+                                <li class="nav-item"><a class="nav-link" asp-controller="Student" asp-action="Create">Submit Request</a></li>
+                                <li class="nav-item"><a class="nav-link" asp-controller="Student" asp-action="MyRequests">My Requests</a></li>
+                            }
+                            @if (User.IsInRole("Staff"))
+                            {
+                                <li class="nav-item"><a class="nav-link" asp-controller="Staff" asp-action="AllRequests">All Requests</a></li>
+                            }
+                        }
+                        else
+                        {
+                            <li class="nav-item"><a class="nav-link" asp-controller="Account" asp-action="Login">Login</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="Account" asp-action="Register">Register</a></li>
+                        }
+                    </ul>
+                    <ul class="navbar-nav ms-auto align-items-lg-center">
+                        @if (User.Identity != null && User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item d-flex align-items-center">
+                                <span class="nav-link user-pill" style="cursor:default;">
+                                    <i class="fa fa-user-circle" style="color:var(--primary);"></i> @User.Identity.Name
+                                    @if (User.IsInRole("Staff")){ <span class="badge-staff">Staff</span> }
+                                    else{ <span class="badge-student">Student</span> }
+                                </span>
+                            </li>
+                            <li class="nav-item ms-lg-2">
+                                <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
+                                    <button type="submit" class="btn btn-sm" style="background:var(--accent); color:var(--primary-dark); border:1px solid var(--accent); padding:7px 16px; border-radius:0; font-weight:900; font-size:11px; text-transform:uppercase; letter-spacing:0.06em; font-family:'Inter',sans-serif;">Logout</button>
+                                </form>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Account" asp-action="Login" style="font-weight:800;"><i class="fa fa-sign-in" style="color:var(--primary);"></i> Login</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Account" asp-action="Register" style="background:var(--accent); color:var(--primary-dark)!important; border-radius:0; margin-left:8px; padding:9px 16px!important; border:1px solid var(--accent); font-weight:900; text-transform:uppercase; font-size:11px;"><i class="fa fa-user-plus"></i> Register</a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </div>
+
+    <!-- ===== BRAC Marquee style announcement ===== -->
+    <div class="marquee-container d-none d-md-block">
+        <div class="container" style="overflow:hidden;">
+            <div style="display:flex; gap:18px; align-items:center; justify-content:center; flex-wrap:wrap; font-size:12px;">
+                <span><i class="fa fa-graduation-cap" style="color:var(--accent);"></i> Admission Open Fall 2026 — Student Service Portal</span>
+                <span style="color:rgba(255,255,255,0.45);">|</span>
+                <span><i class="fa fa-certificate" style="color:var(--accent);"></i> ID / Transcript / Certificate — Track status live</span>
+                <span style="color:rgba(255,255,255,0.45);">|</span>
+                <span style="color:var(--accent); font-weight:800;"><i class="fa fa-globe"></i> iubat.edu • Campus Services</span>
+            </div>
+        </div>
+    </div>
+
+    <main>
+        @RenderBody()
+    </main>
+
+    <!-- ===== Footer — BRAC style (Connect + 4 columns) ===== -->
+    <footer id="rs-footer" class="rs-footer">
+        <div class="footer-top">
+            <div class="container">
+                <!-- Connect With Us — centered like BRAC -->
+                <div class="row justify-content-center text-center mb-4">
+                    <div class="col-md-8">
+                        <h3 class="footer-title text-center" style="border-bottom:none; display:inline-block; padding-bottom:8px;">Connect With Us</h3>
+                        <div class="footer-share justify-content-center" style="border-top:none; margin-top:8px; padding-top:0;">
+                            <a href="https://www.facebook.com" target="_blank" aria-label="Facebook"><i class="fa fa-facebook"></i></a>
+                            <a href="https://twitter.com" target="_blank" aria-label="Twitter"><i class="fa fa-twitter"></i></a>
+                            <a href="https://www.youtube.com" target="_blank" aria-label="YouTube"><i class="fa fa-youtube-play"></i></a>
+                            <a href="https://www.linkedin.com" target="_blank" aria-label="LinkedIn"><i class="fa fa-linkedin"></i></a>
+                            <a href="https://www.instagram.com" target="_blank" aria-label="Instagram"><i class="fa fa-instagram"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-4">
+                    <div class="col-lg-6 col-md-6">
+                        <div class="footer-logo">
+                            <div class="footer-logo-icon">I</div>
+                            <div class="footer-logo-text">
+                                <strong>IUBAT</strong>
+                                <span>Campus Services Portal</span>
+                            </div>
+                        </div>
+                        <p class="footer-desc">
+                            Simple, secure Student Service Request System — students submit ID / transcript / certificate requests, track status; staff update workflow.
+                        </p>
+                        <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:14px;">
+                            <a asp-controller="Account" asp-action="Register" class="btn btn-primary-custom btn-sm" style="flex:1; justify-content:center;"><i class="fa fa-user-plus"></i> Register</a>
+                            <a asp-controller="Account" asp-action="Login" class="btn btn-outline-custom btn-sm" style="flex:1; justify-content:center; background:#fff;"><i class="fa fa-sign-in"></i> Login</a>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6">
+                        <h4 class="footer-title">Contact</h4>
+                        <div class="footer-contact-desc">
+                            <div class="contact-inner">
+                                <i class="fa fa-map-marker"></i>
+                                <div class="info">
+                                    <span>Address</span>
+                                    <div>4 Embankment Drive Road, Sector-10, BRAC, Dhaka-1230</div>
+                                </div>
+                            </div>
+                            <div class="contact-inner">
+                                <i class="fa fa-phone"></i>
+                                <div class="info">
+                                    <span>Hunting</span>
+                                    <div>+88 09613-933933</div>
+                                </div>
+                            </div>
+                            <div class="contact-inner">
+                                <i class="fa fa-envelope"></i>
+                                <div class="info">
+                                    <span>Staff Demo</span>
+                                    <div>arnika@iubat.edu / P@ssw0rd</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container">
+                <div class="copyright">
+                    <div>&copy; 2026 <span style="color:#fff; font-weight:800;">IUBAT Campus Services</span>. All Rights Reserved.</div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <button onclick="topFunction()" id="myBtn" title="Go to top" style="display:none; position:fixed; bottom:22px; right:22px; z-index:99; width:42px; height:42px; border-radius:50%; background:var(--primary); color:#fff; border:2px solid var(--accent); box-shadow:0 4px 16px rgba(0,0,0,0.18);"><i class="fa fa-angle-up"></i></button>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Sticky menu like BRAC
+        (function(){
+            var menu = document.getElementById('mainMenu');
+            if(!menu) return;
+            var offset = menu.offsetTop;
+            window.addEventListener('scroll', function(){
+                if(window.scrollY > offset + 120){
+                    menu.classList.add('sticky');
+                } else {
+                    menu.classList.remove('sticky');
+                }
+                var btn = document.getElementById('myBtn');
+                if(btn) btn.style.display = window.scrollY > 300 ? 'block' : 'none';
+            });
+        })();
+        function topFunction(){ window.scrollTo({top:0, behavior:'smooth'}); }
+    </script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

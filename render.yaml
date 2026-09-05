@@ -1,0 +1,39 @@
+services:
+  - type: web
+    name: student-service-system
+    # Use Docker (guarantees .NET 10) — recommended for free tier
+    # If you prefer Native Runtime instead, delete `dockerfilePath` and set `env: dotnet`
+    env: docker
+    dockerfilePath: ./Dockerfile
+    # dockerContext: ./  # default is repo root; if WebApplication1 is repo root, keep as ./
+    plan: free
+    autoDeploy: true
+    branch: main
+    healthCheckPath: /
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      - key: RENDER
+        value: true
+      # Neon Postgres URL — MUST be set in Render Dashboard → Environment → Add DATABASE_URL
+      # Paste: postgresql://neondb_owner:npg_bITDV2lE3QUK@ep-purple-surf-axhkpygc-pooler.c-4.us-east-2.aws.neon.tech/neondb?sslmode=require&channel_binding=require
+      - key: DATABASE_URL
+        sync: false
+      # Alternative key Render/Npgsql also checks:
+      # - key: ConnectionStrings__DefaultConnection
+      #   sync: false
+
+# Alternative Native (non-Docker) service — uncomment if you want buildCommand/startCommand instead of Docker:
+#  - type: web
+#    name: student-service-system-native
+#    env: dotnet
+#    plan: free
+#    buildCommand: dotnet publish -c Release -o out
+#    startCommand: dotnet out/WebApplication1.dll
+#    envVars:
+#      - key: ASPNETCORE_ENVIRONMENT
+#        value: Production
+#      - key: RENDER
+#        value: true
+#      - key: DATABASE_URL
+#        sync: false

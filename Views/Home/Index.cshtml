@@ -1,0 +1,109 @@
+﻿@{
+    ViewData["Title"] = "Home";
+}
+
+<!-- ===== HERO / SLIDER — NDC navy/gold, only core CTAs ===== -->
+<section class="rs-slider" style="min-height:460px;">
+    <div class="slider-bg"></div>
+    <div class="container">
+        <div class="slide-content">
+            <span class="sl-subtitle">IUBAT — Student Service Request System</span>
+            <h1 class="slider-title">SIMPLE REQUEST.<br><span>SECURE TRACKING.</span></h1>
+            <p class="slider-desc">
+                Students submit ID card, transcript and certificate requests in one form — track status live. Staff securely manage all submissions.
+            </p>
+            @if (User.Identity != null && User.Identity.IsAuthenticated)
+            {
+                <div class="slider-btns">
+                    @if (User.IsInRole("Student"))
+                    {
+                        <a asp-controller="Student" asp-action="Create" class="sl-get-started-btn"><i class="fa fa-plus-circle"></i> New Service Request</a>
+                        <a asp-controller="Student" asp-action="MyRequests" class="sl-readmore-btn"><i class="fa fa-list-alt"></i> My Requests</a>
+                    }
+                    else if (User.IsInRole("Staff"))
+                    {
+                        <a asp-controller="Staff" asp-action="AllRequests" class="sl-get-started-btn"><i class="fa fa-cogs"></i> View All Requests</a>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="slider-btns">
+                    <a asp-controller="Account" asp-action="Login" class="sl-get-started-btn"><i class="fa fa-sign-in"></i> Student / Staff Login</a>
+                    <a asp-controller="Account" asp-action="Register" class="sl-readmore-btn"><i class="fa fa-user-plus"></i> Register (Student)</a>
+                </div>
+            }
+            <div class="slider-meta">
+                <span><i class="fa fa-lock"></i> Role-based access</span>
+                <span><i class="fa fa-check-circle"></i> Pending → Processing → Completed/Rejected</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== ONLY REQUIRED FEATURES — 3 request types ===== -->
+<section class="rs-services" style="padding:38px 0 32px;">
+    <div class="container">
+        <div class="sec-title" style="margin-bottom:22px;">
+            <h2>CORE <span>SERVICES</span></h2>
+            <p>Exactly the three request types required — no extra bloat, easy for students to select.</p>
+        </div>
+        <div class="row g-3">
+            <div class="col-md-4">
+                <div class="services-item" style="text-align:left; padding:20px 18px;">
+                    <div class="svc-icon" style="margin:0 0 12px 0;"><i class="fa fa-id-card-o"></i></div>
+                    <h4 style="font-size:14px;">ID Card Replacement</h4>
+                    <p style="font-size:13.5px;">Select <strong>RequestType = IDCardReplacement</strong>, add description, submit — tracked as <em>Pending</em> by default.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="services-item" style="text-align:left; padding:20px 18px;">
+                    <div class="svc-icon" style="margin:0 0 12px 0; background:#fff8e6; border-color:#fde68a; color:#b45309;"><i class="fa fa-file-text-o"></i></div>
+                    <h4 style="font-size:14px;">Transcript Request</h4>
+                    <p style="font-size:13.5px;">Same form, choose <strong>TranscriptRequest</strong>. Students view status; staff update to <em>Processing/Completed</em>.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="services-item" style="text-align:left; padding:20px 18px;">
+                    <div class="svc-icon" style="margin:0 0 12px 0; background:#fef2f2; border-color:#fecaca; color:#b91c1c;"><i class="fa fa-certificate"></i></div>
+                    <h4 style="font-size:14px;">Certificate Request</h4>
+                    <p style="font-size:13.5px;">Select <strong>CertificateRequest</strong>. Staff may set <em>Rejected</em> with clear workflow.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== CONFLICT RESOLUTION — Simple + Secure ===== -->
+<section class="rs-about" style="padding:32px 0 28px;">
+    <div class="container">
+        <div class="detail-card" style="border-left:4px solid var(--accent);">
+            <div class="detail-body">
+                <div class="row g-3 align-items-center">
+                    <div class="col-lg-8">
+                        <h5 style="text-transform:uppercase; font-size:13px; letter-spacing:0.07em; color:var(--primary); margin-bottom:6px;"><i class="fa fa-balance-scale" style="color:var(--accent);"></i> Needs → Conflict → Design</h5>
+                        <p style="font-size:13.5px; line-height:1.65; margin-bottom:10px; color:var(--text);">
+                            <strong>Users:</strong> Student (register/login, submit, view own) & Staff (login, view all, update status). <strong>Functional:</strong> CRUD on <code>ServiceRequest</code> + Auth + Role. <strong>Non-functional:</strong> Usability, Security, Reliability.
+                            <strong style="color:var(--primary);">Conflict:</strong> Ease-of-use vs access control — open forms vs restricted staff edits.
+                            <strong style="color:var(--primary);">Design fix:</strong> Simple single form for students + <code>[Authorize(Roles="Staff")]</code> gate + EF FK <code>StudentId</code> filter so students see only own rows.
+                        </p>
+                        <div class="d-flex gap-2 flex-wrap">
+                            <span class="status-badge status-pending">Pending</span>
+                            <span class="status-badge status-processing">Processing</span>
+                            <span class="status-badge status-completed">Completed</span>
+                            <span class="status-badge status-rejected">Rejected</span>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 text-lg-end">
+                        <div style="display:inline-flex; flex-direction:column; gap:8px;">
+                            <a asp-controller="Student" asp-action="Create" class="btn btn-primary-custom btn-sm"><i class="fa fa-plus"></i> Submit Request (Student)</a>
+                            <a asp-controller="Staff" asp-action="AllRequests" class="btn btn-outline-custom btn-sm" style="justify-content:center;"><i class="fa fa-shield"></i> Manage (Staff only)</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
