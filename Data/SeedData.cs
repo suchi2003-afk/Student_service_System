@@ -48,7 +48,28 @@ namespace WebApplication1.Data
             }
             else
             {
-                // Ensure existing suchi has Staff role (fixes case where user existed without role)
+                // Ensure existing suchi is fully correct: EmailConfirmed, UserName, Staff role, and password == Passw0rd
+                bool needsUpdate = false;
+                if (!existingStaff.EmailConfirmed)
+                {
+                    existingStaff.EmailConfirmed = true;
+                    needsUpdate = true;
+                }
+                if (existingStaff.UserName != staffEmail)
+                {
+                    existingStaff.UserName = staffEmail;
+                    existingStaff.NormalizedUserName = staffEmail.ToUpperInvariant();
+                    needsUpdate = true;
+                }
+                if (needsUpdate)
+                {
+                    var updResult = await userManager.UpdateAsync(existingStaff);
+                    Console.WriteLine(updResult.Succeeded
+                        ? $"[Seed] Fixed: Updated profile for {staffEmail} (confirmed/username)."
+                        : $"[Seed] Failed to update {staffEmail}: {string.Join(", ", updResult.Errors.Select(e => e.Description))}");
+                }
+
+                // Ensure Staff role
                 if (!await userManager.IsInRoleAsync(existingStaff, "Staff"))
                 {
                     var addRoleResult = await userManager.AddToRoleAsync(existingStaff, "Staff");
@@ -56,9 +77,33 @@ namespace WebApplication1.Data
                         ? $"[Seed] Fixed: Added missing Staff role to existing {staffEmail}."
                         : $"[Seed] Failed to add Staff role to {staffEmail}: {string.Join(", ", addRoleResult.Errors.Select(e => e.Description))}");
                 }
+
+                // Ensure password is exactly Passw0rd — fixes Invalid login attempt when DB had old hash
+                const string desiredPassword = "Passw0rd";
+                var passwordValid = await userManager.CheckPasswordAsync(existingStaff, desiredPassword);
+                if (!passwordValid)
+                {
+                    var resetToken = await userManager.GeneratePasswordResetTokenAsync(existingStaff);
+                    var resetResult = await userManager.ResetPasswordAsync(existingStaff, resetToken, desiredPassword);
+                    Console.WriteLine(resetResult.Succeeded
+                        ? $"[Seed] Fixed: Reset password for {staffEmail} to desired value."
+                        : $"[Seed] Failed to reset password for {staffEmail}: {string.Join(", ", resetResult.Errors.Select(e => e.Description))}");
+                    // If reset fails (e.g., token provider issue), fallback: remove + add password
+                    if (!resetResult.Succeeded)
+                    {
+                        var removeResult = await userManager.RemovePasswordAsync(existingStaff);
+                        if (removeResult.Succeeded)
+                        {
+                            var addResult = await userManager.AddPasswordAsync(existingStaff, desiredPassword);
+                            Console.WriteLine(addResult.Succeeded
+                                ? $"[Seed] Fallback: Set password for {staffEmail} via AddPassword."
+                                : $"[Seed] Fallback failed to set password for {staffEmail}: {string.Join(", ", addResult.Errors.Select(e => e.Description))}");
+                        }
+                    }
+                }
                 else
                 {
-                    Console.WriteLine($"[Seed] Staff {staffEmail} already exists with Staff role.");
+                    Console.WriteLine($"[Seed] Staff {staffEmail} already exists with Staff role and correct password.");
                 }
             }
 
